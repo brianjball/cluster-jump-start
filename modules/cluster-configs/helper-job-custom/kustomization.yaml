@@ -1,0 +1,25 @@
+apiVersion: kustomize.config.k8s.io/v1alpha1
+kind: Component
+
+namespace: adhoc-admin
+
+resources:
+  - https://github.com/redhat-na-ssa/demo-ai-gitops-catalog/components/cluster-configs/adhoc-admin?ref=v0.17
+
+components:
+  - https://github.com/redhat-na-ssa/demo-ai-gitops-catalog/components/cluster-configs/adhoc-admin/components/helper?ref=v0.17
+
+
+generatorOptions:
+  disableNameSuffixHash: true
+
+configMapGenerator:
+  - name: demo-adhoc
+    files:
+      - adhoc.sh
+
+patches:
+  - path: patch-job.yaml
+    target:
+      kind: Job
+      name: adhoc-admin-helper
