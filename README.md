@@ -7,7 +7,7 @@ This is an example of how to setup OpenShift AI
 Run default demo
 
 ```sh
-until oc apply -k demos/default; do : ; done
+until oc apply -k demo/default; do : ; done
 ```
 
 ## Development
