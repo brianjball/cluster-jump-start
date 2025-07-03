@@ -1,0 +1,44 @@
+apiVersion: kustomize.config.k8s.io/v1alpha1
+kind: Component
+
+resources:
+  - https://github.com/redhat-na-ssa/demo-ai-gitops-catalog/demos/rhoai-workshop-ready?ref=v0.11
+  - rhods-admins-group.yaml
+
+patches:
+  - target:
+      kind: Job
+      name: job-aws-gpu-machineset
+    patch: |-
+      - op: replace
+        path: /spec/template/spec/containers/0/env/0
+        value:
+          name: INSTANCE_TYPE
+          value: g6.4xlarge
+  - target:
+      kind: NodeFeatureDiscovery
+    patch: |-
+      - op: replace
+        path: /spec/operand/image
+        value: registry.redhat.io/openshift4/ose-node-feature-discovery-rhel9:v4.16
+  # - target:
+  #     kind: ConsolePlugin
+  #     name: console-plugin-nvidia-gpu
+  #   patch: |-
+  #     - op: replace
+  #       path: /spec/service
+  #       value:
+  #         basePath: /
+  #         name: console-plugin-nvidia-gpu
+  #         namespace: nvidia-gpu-operator
+  #         port: 9443
+  - target:
+      kind: ConfigMap
+      name: notebook-controller-culler-config
+    patch: |-
+      - op: replace
+        path: /data
+        value:
+          CULL_IDLE_TIME: "60"
+          ENABLE_CULLING: "true"
+          IDLENESS_CHECK_PERIOD: "1"
